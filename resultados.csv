@@ -1,0 +1,5 @@
+metodo,threads,tempo_ms
+Serial,1,578
+Paralelo,2,319
+Paralelo,4,458
+Paralelo,8,366
