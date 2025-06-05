@@ -16,9 +16,8 @@ public class ParallelCPU {
         }
     }
 
-    // Classe recursiva para dividir e contar
     public static class ContagemTask extends RecursiveTask<Integer> {
-        private static final int LIMIAR = 2000;
+        private static final int LIMIAR = 10000;
         private final String[] palavras;
         private final int inicio, fim;
         private final String palavraBuscada;
@@ -45,8 +44,9 @@ public class ParallelCPU {
                 ContagemTask esquerda = new ContagemTask(palavras, inicio, meio, palavraBuscada);
                 ContagemTask direita = new ContagemTask(palavras, meio, fim, palavraBuscada);
                 esquerda.fork(); 
-                int direitaResultado = direita.compute(); 
-                int esquerdaResultado = esquerda.join();  
+                direita.fork();
+                int direitaResultado = direita.join(); 
+                int esquerdaResultado = esquerda.join();
                 return esquerdaResultado + direitaResultado;
             }
         }
@@ -78,9 +78,9 @@ public class ParallelCPU {
 
     public static void main(String[] args) {
         String arquivo = "C:\\Users\\muril\\OneDrive\\Documentos\\GitHub\\busca_paralela_cpu-gpu\\base_palavras.txt";
-        String palavra = "augue";
+        String palavra = "gutenberg";
 
-        Resultado resultado = contarPalavraParalelo(arquivo, palavra,4);
+        Resultado resultado = contarPalavraParalelo(arquivo, palavra,6);
         System.out.println("ParallelCPU: " + resultado.ocorrencias + " ocorrências em " + resultado.tempoMillis + " ms");
     }
 }

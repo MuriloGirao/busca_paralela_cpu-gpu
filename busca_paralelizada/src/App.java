@@ -10,8 +10,8 @@ import java.util.List;
 public class App extends JFrame {
     private JButton executarButton;
     private JPanel graficoPanel;
-    private final String caminhoArquivo = "base_palavras.txt";
-    private final String palavraBuscada = "amor";
+    private final String caminhoArquivo = "C:\\Users\\muril\\OneDrive\\Documentos\\GitHub\\busca_paralela_cpu-gpu\\base_palavras.txt";
+    private final String palavraBuscada = "gutenberg";
 
     public App() {
         setTitle("Comparativo Serial vs Paralelo");
@@ -57,17 +57,14 @@ public class App extends JFrame {
     private void executarTestes() {
         resultados.clear();
 
-        // Execução serial (equivale a 1 thread)
         SerialCPU.Resultado resultadoSerial = SerialCPU.contarPalavra(caminhoArquivo, palavraBuscada);
         resultados.add(new ResultadoExecucao("Serial", 1, resultadoSerial.tempoMillis));
 
-        // Execuções paralelas com diferentes números de threads
-        for (int threads : new int[]{2, 4, 8}) {
+        for (int threads : new int[]{2, 4, 6}) {
             ParallelCPU.Resultado resultadoParalelo = ParallelCPU.contarPalavraParalelo(caminhoArquivo, palavraBuscada, threads);
             resultados.add(new ResultadoExecucao("ParaleloCPU", threads, resultadoParalelo.tempoMillis));
         }
 
-        // Salva em CSV
         salvarResultadosCSV();
     }
 
@@ -89,14 +86,15 @@ public class App extends JFrame {
         int width = graficoPanel.getWidth();
         int height = graficoPanel.getHeight();
 
-        // Eixos
         g2.drawLine(50, height - 50, width - 50, height - 50); // X
         g2.drawLine(50, height - 50, 50, 50); // Y
         g2.drawString("Threads", width / 2, height - 20);
         g2.drawString("Tempo (ms)", 10, 30);
 
-        // Normalização
         long maxTempo = resultados.stream().mapToLong(r -> r.tempo).max().orElse(1);
+
+        List<Point> pontosSerial = new ArrayList<>();
+        List<Point> pontosParalelo = new ArrayList<>();
 
         for (ResultadoExecucao r : resultados) {
             int x = 50 + r.threads * 50;
@@ -104,6 +102,34 @@ public class App extends JFrame {
             g2.setColor(r.metodo.equals("Serial") ? Color.RED : Color.BLUE);
             g2.fillOval(x - 4, y - 4, 8, 8);
             g2.drawString(r.tempo + "ms", x - 10, y - 10);
+
+            if (r.metodo.equals("Serial")) {
+                pontosSerial.add(new Point(x, y));
+            } else if (r.metodo.equals("ParaleloCPU")) {
+                pontosParalelo.add(new Point(x, y));
+            }
+        }
+
+        // Conectar pontos com linhas
+        g2.setStroke(new BasicStroke(2));
+        g2.setColor(Color.RED);
+        for (int i = 1; i < pontosSerial.size(); i++) {
+            g2.drawLine(pontosSerial.get(i - 1).x, pontosSerial.get(i - 1).y, pontosSerial.get(i).x, pontosSerial.get(i).y);
+        }
+
+        g2.setColor(Color.BLUE);
+        for (int i = 1; i < pontosParalelo.size(); i++) {
+            g2.drawLine(pontosParalelo.get(i - 1).x, pontosParalelo.get(i - 1).y, pontosParalelo.get(i).x, pontosParalelo.get(i).y);
+        }
+
+        // Conectar ponto Serial ao primeiro ponto ParaleloCPU
+        if (!pontosSerial.isEmpty() && !pontosParalelo.isEmpty()) {
+            Point pontoSerial = pontosSerial.get(0);
+            Point primeiroParalelo = pontosParalelo.get(0);
+
+            g2.setColor(Color.RED);
+            g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0, new float[]{5}, 0));
+            g2.drawLine(pontoSerial.x, pontoSerial.y, primeiroParalelo.x, primeiroParalelo.y);
         }
     }
 

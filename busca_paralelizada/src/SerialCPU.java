@@ -21,13 +21,10 @@ public class SerialCPU {
             String linha;
 
             while ((linha = leitor.readLine()) != null) {
-                // Normaliza a linha: tudo minúsculo, remove pontuações básicas
                 linha = linha.toLowerCase().replaceAll("[^a-zA-Z0-9\\s]", "");
 
-                // Separa a linha em palavras
                 String[] palavras = linha.split("\\s+");
 
-                // Conta ocorrências
                 for (String palavra : palavras) {
                     if (palavra.equals(palavraBuscada.toLowerCase())) {
                         contador++;
@@ -43,10 +40,9 @@ public class SerialCPU {
         return new Resultado(contador, fim - inicio);
     }
 
-    // Teste básico no console
     public static void main(String[] args) {
         String arquivo = "C:\\Users\\muril\\OneDrive\\Documentos\\GitHub\\busca_paralela_cpu-gpu\\base_palavras.txt";
-        String palavra = "augue";
+        String palavra = "gutenberg";
 
         Resultado resultado = contarPalavra(arquivo, palavra);
         System.out.println("SerialCPU: " + resultado.ocorrencias + " ocorrências em " + resultado.tempoMillis + " ms");
