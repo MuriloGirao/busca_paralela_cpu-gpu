@@ -84,3 +84,10 @@ public class ParallelCPU {
         System.out.println("ParallelCPU: " + resultado.ocorrencias + " ocorrências em " + resultado.tempoMillis + " ms");
     }
 }
+               /* int meio = (inicio + fim) / 2;
+                ContagemTask esquerda = new ContagemTask(palavras, inicio, meio, palavraBuscada);
+                ContagemTask direita = new ContagemTask(palavras, meio, fim, palavraBuscada);
+                direita.fork();
+                int direitaResultado = direita.join(); 
+                int esquerdaResultado = esquerda.compute();
+                return esquerdaResultado + direitaResultado; */

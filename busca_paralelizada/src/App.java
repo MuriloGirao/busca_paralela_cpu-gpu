@@ -110,7 +110,6 @@ public class App extends JFrame {
             }
         }
 
-        // Conectar pontos com linhas
         g2.setStroke(new BasicStroke(2));
         g2.setColor(Color.RED);
         for (int i = 1; i < pontosSerial.size(); i++) {
@@ -122,7 +121,6 @@ public class App extends JFrame {
             g2.drawLine(pontosParalelo.get(i - 1).x, pontosParalelo.get(i - 1).y, pontosParalelo.get(i).x, pontosParalelo.get(i).y);
         }
 
-        // Conectar ponto Serial ao primeiro ponto ParaleloCPU
         if (!pontosSerial.isEmpty() && !pontosParalelo.isEmpty()) {
             Point pontoSerial = pontosSerial.get(0);
             Point primeiroParalelo = pontosParalelo.get(0);

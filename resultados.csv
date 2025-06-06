@@ -1,5 +1,5 @@
 metodo,threads,tempo_ms
-Serial,1,209
-ParaleloCPU,2,194
-ParaleloCPU,4,170
-ParaleloCPU,6,211
+Serial,1,395
+ParaleloCPU,2,213
+ParaleloCPU,4,163
+ParaleloCPU,6,161
